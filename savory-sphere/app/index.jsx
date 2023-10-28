@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { auth, db } from '../src/firebase';
-import { Redirect, router} from 'expo-router';
+import { Redirect, router } from 'expo-router';
 import { useDispatch } from 'react-redux';
-import { setUserEmail, setUserName, setUserPhoto, setUserUid } from '../src/redux/actions';
-import { doc, getDoc } from "firebase/firestore";
+import { setUserBio, setUserDob, setUserEmail, setUserName, setUserPhoto, setUserUid } from '../src/redux/actions';
+import { doc, getDoc, Timestamp } from "firebase/firestore";
 
 export default function AppLayout() {
     const [initializing, setInitializing] = useState(true);
@@ -24,20 +24,21 @@ export default function AppLayout() {
 
     useEffect(() => {
         if (user) {
-            console.log(user)
-            dispatch(setUserName(user.displayName))
-            dispatch(setUserEmail(user.email))
-            dispatch(setUserPhoto(user.photoURL))
-            dispatch(setUserUid(user.uid))
             const docRef = doc(db, "users", user.uid);
             async function getData() {
                 const docSnap = await getDoc(docRef);
-    
+
                 if (docSnap.exists()) {
-                    console.log("Document data:", docSnap.data());
+                    const docData = docSnap.data()
+                    const timestamp = new Timestamp(docData.dob.seconds, docData.dob.nanoseconds)
+                    dispatch(setUserName(docData.name))
+                    dispatch(setUserEmail(user.email))
+                    dispatch(setUserPhoto(docData.photoUrl))
+                    dispatch(setUserBio(docData.bio))
+                    dispatch(setUserDob(timestamp.toDate().toString()))
+                    dispatch(setUserUid(user.uid))
                     router.replace('tabs');
                 } else {
-                    // docSnap.data() will be undefined in this case
                     console.log("No such document!");
                     router.replace('createProfile');
                 }
@@ -56,9 +57,9 @@ export default function AppLayout() {
 
 
 
-//     return (
-//         <Redirect href={'tabs'} />
-//     );
+    //     return (
+    //         <Redirect href={'tabs'} />
+    //     );
 }
 
 const styles = StyleSheet.create({

@@ -42,9 +42,6 @@ const CreateProfilePage = () => {
     };
 
     const handleSubmit = async() => {
-        console.log(name)
-        console.log(bio)
-        console.log(dob)
         const photoUrl = await uploadImageAsync(image,userUid);
         try {
             await setDoc(doc(db, "users", userUid), {
