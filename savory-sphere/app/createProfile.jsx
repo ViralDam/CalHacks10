@@ -5,6 +5,11 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { COLORS } from "../src/utils/constants";
 import Constants from 'expo-constants';
 import { Image } from "expo-image";
+import { useSelector } from "react-redux";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { db, storage } from "../src/firebase";
+import { doc, setDoc } from "firebase/firestore"; 
+import { router } from "expo-router";
 
 const dummyImage = require('../assets/images/blank_profile.png')
 
@@ -13,6 +18,9 @@ const CreateProfilePage = () => {
     const [bio, setBio] = useState('')
     const [image, setImage] = useState(null);
     const [dob, setDob] = useState(new Date());
+
+    const userUid = useSelector((state) => state.user.uid)
+    const userEmail = useSelector((state) => state.user.email)
 
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
@@ -33,10 +41,24 @@ const CreateProfilePage = () => {
         setDob(new Date(date))
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async() => {
         console.log(name)
         console.log(bio)
         console.log(dob)
+        const photoUrl = await uploadImageAsync(image,userUid);
+        try {
+            await setDoc(doc(db, "users", userUid), {
+                name: name,
+                dob: dob,
+                bio: bio,
+                email: userEmail,
+                photoUrl: photoUrl
+              });
+            router.push('/')
+        } catch (e) {
+            console.log(e);
+        }
+        
     }
 
     const uploadImageAsync = async (uri, uid) => {
