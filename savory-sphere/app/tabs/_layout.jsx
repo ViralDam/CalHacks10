@@ -61,6 +61,7 @@ const TabLayout = () => {
                     title: "Profile"
                 }}
             />
+            <Tabs.Screen name='feed' />
         </Tabs>
     );
 }
