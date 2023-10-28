@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
-import { auth } from '../src/firebase';
-import { Redirect } from 'expo-router';
+import { auth, db } from '../src/firebase';
+import { Redirect, router} from 'expo-router';
 import { useDispatch } from 'react-redux';
-import { setUserData, setUserEmail, setUserName, setUserPhoto, setUserUid } from '../src/redux/actions';
+import { setUserEmail, setUserName, setUserPhoto, setUserUid } from '../src/redux/actions';
+import { doc, getDoc } from "firebase/firestore";
 
 export default function AppLayout() {
     const [initializing, setInitializing] = useState(true);
@@ -28,6 +29,20 @@ export default function AppLayout() {
             dispatch(setUserEmail(user.email))
             dispatch(setUserPhoto(user.photoURL))
             dispatch(setUserUid(user.uid))
+            const docRef = doc(db, "users", user.uid);
+            async function getData() {
+                const docSnap = await getDoc(docRef);
+    
+                if (docSnap.exists()) {
+                    console.log("Document data:", docSnap.data());
+                    router.replace('tabs');
+                } else {
+                    // docSnap.data() will be undefined in this case
+                    console.log("No such document!");
+                    router.replace('createProfile');
+                }
+            }
+            getData()
         }
     }, [user]);
 
@@ -41,9 +56,9 @@ export default function AppLayout() {
 
 
 
-    return (
-        <Redirect href={'tabs'} />
-    );
+//     return (
+//         <Redirect href={'tabs'} />
+//     );
 }
 
 const styles = StyleSheet.create({

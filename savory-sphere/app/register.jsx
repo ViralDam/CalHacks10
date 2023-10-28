@@ -15,7 +15,7 @@ const RegisterPage = () => {
                 console.warn("User Created Successfully");
                 setEmail("");
                 setPassword("");
-                router.replace('/')
+                router.replace('createProfile')
             })
             .catch((error) => {
                 const errorCode = error.code;

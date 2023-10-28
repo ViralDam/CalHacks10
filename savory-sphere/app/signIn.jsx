@@ -5,7 +5,6 @@ import { useState } from "react";
 import { Button } from "react-native";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useDispatch } from 'react-redux';
-import { setUserData } from '../src/redux/actions';
 
 const SignInPage = () => {
     const [email, setEmail] = useState('');
@@ -18,7 +17,7 @@ const SignInPage = () => {
             .then((userCredential) => {
                 const user = userCredential.user;
                 // console.log(user)
-                dispatch(setUserData(user))
+                // dispatch(setUserData(user))
                 router.replace('/')
             })
             .catch((error) => {
