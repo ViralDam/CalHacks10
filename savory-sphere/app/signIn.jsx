@@ -16,8 +16,6 @@ const SignInPage = () => {
         signInWithEmailAndPassword(auth, email, pass)
             .then((userCredential) => {
                 const user = userCredential.user;
-                // console.log(user)
-                // dispatch(setUserData(user))
                 router.replace('/')
             })
             .catch((error) => {

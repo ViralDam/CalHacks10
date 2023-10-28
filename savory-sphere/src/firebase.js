@@ -13,7 +13,6 @@ const firebaseConfig = {
     messagingSenderId: Constants.expoConfig?.extra?.firebaseMessagingSenderId,
     appId: Constants.expoConfig?.extra?.firebaseAppId
 };
-console.log(firebaseConfig)
 
 const app = initializeApp(firebaseConfig);
 initializeAuth(app, {

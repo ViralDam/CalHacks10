@@ -11,7 +11,7 @@ import { db, storage } from "../src/firebase";
 import { doc, setDoc } from "firebase/firestore"; 
 import { router } from "expo-router";
 
-const dummyImage = require('../assets/images/blank_profile.png')
+const dummyImage = require('../assets/images/blank_profile.png');
 
 const CreateProfilePage = () => {
     const [name, setName] = useState('')
@@ -27,10 +27,9 @@ const CreateProfilePage = () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
-            aspect: [4, 3],
+            aspect: [1, 1],
             quality: 1,
         });
-        console.log(result);
 
         if (!result.canceled) {
             setImage(result.assets[0].uri);

@@ -34,8 +34,11 @@ const TabLayout = () => {
                     const { name } = route;
                     return <Ionicons name={getIconName(name, focused)} size={size} color={color} />;
                 },
-                tabBarActiveTintColor: COLORS.PRIMARY,
-                tabBarInactiveTintColor: 'gray',
+                tabBarActiveTintColor: COLORS.BACKGROUND,
+                tabBarInactiveTintColor: COLORS.BACKGROUND,
+                tabBarStyle: {
+                    backgroundColor: COLORS.PRIMARY,
+                },
             })}>
             <Tabs.Screen
                 name='index'
