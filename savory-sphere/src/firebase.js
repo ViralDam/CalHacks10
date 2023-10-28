@@ -1,16 +1,21 @@
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, initializeAuth, getReactNativePersistence } from "firebase/auth";
+import Constants from "expo-constants"
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCIfXTmPe0-FwbG0fHAzy2-M3SvABdbERw",
-  authDomain: "cal-hacks-10.firebaseapp.com",
-  projectId: "cal-hacks-10",
-  storageBucket: "cal-hacks-10.appspot.com",
-  messagingSenderId: "1062331412035",
-  appId: "1:1062331412035:web:bf884707b1466d85942ef6"
+    apiKey: Constants.expoConfig?.extra?.firebaseApiKey,
+    authDomain: Constants.expoConfig?.extra?.firebaseAuthDomain,
+    projectId: Constants.expoConfig?.extra?.firebaseProjectId,
+    storageBucket: Constants.expoConfig?.extra?.firebaseStorageBucket,
+    messagingSenderId: Constants.expoConfig?.extra?.firebaseMessagingSenderId,
+    appId: Constants.expoConfig?.extra?.firebaseAppId
 };
 
 const app = initializeApp(firebaseConfig);
+initializeAuth(app, {
+    persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+});
 const auth = getAuth(app);
 
 export { auth };
