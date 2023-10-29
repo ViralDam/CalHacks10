@@ -1,11 +1,13 @@
 import { router } from 'expo-router'
 import { signOut } from "firebase/auth";
-import { Text, View, StyleSheet, Button, Touchable, TouchableOpacity } from "react-native";
+import React, { useState } from 'react';
+import { Text, View, StyleSheet, Button, Touchable, TouchableOpacity, FlatList } from "react-native";
 import { auth } from "../../../src/firebase";
 import { Image } from "expo-image";
 import { useSelector } from "react-redux";
 import { COLORS } from '../../../src/utils/constants';
 import Constants from 'expo-constants';
+import PostCard from '../../components/PostCard'
 
 const dummyImage = require('../../../assets/images/blank_profile.png');
 
@@ -22,6 +24,31 @@ const Profile = () => {
             router.replace('/');
         })
     }
+    
+    const [post, setPost] = useState([
+        {
+            id: '1',
+            imageUrl: 'https://cdn.loveandlemons.com/wp-content/uploads/2021/04/green-salad.jpg',
+            caption: 'Love this healthy salad! #HealthyEating',
+            ratings: 80,
+          },
+          {
+            id: '2',
+            imageUrl: 'https://i2.wp.com/www.downshiftology.com/wp-content/uploads/2018/03/How-to-Boil-Eggs-main-1-2.jpg',
+            caption: 'Ande ande ande!',
+            ratings: 95,
+          },
+          {
+            id: '3',
+            imageUrl: 'https://images.freeimages.com/images/large-previews/ab2/burger-and-fries-1328407.jpg',
+            caption: 'Burger',
+            ratings: 25,
+          },
+    ]);
+
+    const renderPost = ({ item }) => {
+        return <PostCard post={item} />;
+    };
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -45,6 +72,12 @@ const Profile = () => {
                     </View>
                 </View>
             </View>
+            <FlatList
+                    data={post}
+                    renderItem={renderPost}
+                    keyExtractor={item => item.id}
+                    style={styles.flatList}
+            />
             <Button title="LogOut" onPress={handleSignOut} />
         </View>
     );
@@ -65,7 +98,6 @@ const styles = StyleSheet.create({
     header: {
         alignItems: 'center',
         width: '100%',
-        // borderWidth: 1
         paddingVertical: 30,
     },
     bioText: {
