@@ -4,6 +4,7 @@ import { useRef, useState, useEffect } from 'react';
 import Constants from 'expo-constants';
 import axios from 'axios';
 import { COLORS } from '../../src/utils/constants';
+import { useLocalSearchParams } from 'expo-router';
 
 const backImage = require('../../assets/images/chat-background.jpg');
 
@@ -17,6 +18,18 @@ const ChatPage = () => {
     const [chat_log, setChat_log] = useState([{ 'text': startMsg, 'isUser': false }]);
     const [keyboardOffset, setKeyboardOffset] = useState(0);
     const [message, setMessage] = useState('');
+    const [loading, setLoading] = useState(false); 
+
+    const { caption } = useLocalSearchParams();
+
+
+    useEffect(() => {
+        if(caption) {
+            const newChat = [...chat_log, { 'text': `Give me healthy recipe for ${caption}`, 'isUser': true }]
+            setChat_log(newChat);
+            getResponse(newChat);
+        }
+    }, [caption])
 
     const getPrompt = (chat_log) => {
         let story = '';
@@ -58,6 +71,7 @@ const ChatPage = () => {
     }
 
     const getResponse = async (newChat) => {
+        setChat_log([...newChat, { 'text': 'Cooking...👩🏻‍🍳', 'isUser': false }]);
         axios.post(_endpoint, {
             "model": "togethercomputer/llama-2-70b-chat",
             "max_tokens": 512,
@@ -117,7 +131,7 @@ const ChatPage = () => {
                     <View style={{ position: 'absolute', bottom: keyboardOffset, flexDirection: 'row', paddingVertical: 12, justifyContent: 'center', alignContent: 'center', marginHorizontal: 10, }} >
                         <TextInput style={styles.inputStyle} value={message} onChangeText={setMessage} onSubmitEditing={Keyboard.dismiss} placeholder='Give me health information regarding ...' placeholderTextColor={`${COLORS.DARK}40`}></TextInput>
                         <TouchableOpacity onPress={() => handleSend()}>
-                            <Ionicons name="send" size={24} style={{ marginTop: 4, marginLeft: 8 }} />
+                            <Ionicons name="send" size={24} style={{ marginTop: 4, marginLeft: 8 }} color={COLORS.DARK}/>
                         </TouchableOpacity>
                     </View>
                 </View>
