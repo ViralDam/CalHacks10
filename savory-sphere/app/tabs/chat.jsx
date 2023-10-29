@@ -1,8 +1,11 @@
-import { FlatList, Text, TextInput, TouchableOpacity, View, Keyboard, StyleSheet } from 'react-native';
+import { FlatList, Text, TextInput, TouchableOpacity, View, Keyboard, StyleSheet, ImageBackground } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import { useRef, useState, useEffect } from 'react';
 import Constants from 'expo-constants';
 import axios from 'axios';
+import { COLORS } from '../../src/utils/constants';
+
+const backImage = require('../../assets/images/chat-background.jpg');
 
 
 const _endpoint = `https://api.together.xyz/inference`
@@ -46,7 +49,7 @@ const ChatPage = () => {
 
     const handleSend = () => {
         if (message) {
-            const newChat =  [...chat_log, { 'text': message, 'isUser': true }]
+            const newChat = [...chat_log, { 'text': message, 'isUser': true }]
             setChat_log(newChat);
             Keyboard.dismiss();
             setMessage('');
@@ -72,59 +75,61 @@ const ChatPage = () => {
             }
         }).then((response) => {
             // console.log(response.data.output.choices[0].text);
-            setChat_log([...newChat, { 'text': response.data.output.choices[0].text.trim().slice(0,-5), 'isUser': false }]);
+            setChat_log([...newChat, { 'text': response.data.output.choices[0].text.trim().slice(0, -5), 'isUser': false }]);
         }, (error) => {
             console.log(error);
         });
     }
 
     return (
-        <View style={styles.container}>
-            <View style={{ flex: 1 }}>
-                <FlatList
-                    data={chat_log}
-                    ref={flatListRef}
-                    contentContainerStyle={{ flexDirection: 'column-reverse', paddingTop: 16 }}
-                    inverted
-                    renderItem={({ item, index }) => {
-                        rowId = { index }
-                        if (item.isUser) {
-                            return (
-                                <View style={styles.rightBubble} key={index}>
-                                    <Text style={{ fontSize: 16, color: "#fff", }} key={index}> {item.text}</Text>
-                                    <View style={styles.rightArrow} />
-                                    <View style={styles.rightArrowOverlap} />
-                                </View>
-                            )
-                        } else {
-                            return (
-                                <View style={styles.leftBubble} key={index}>
-                                    <Text style={{ fontSize: 16, color: "#000", justifyContent: "center" }} key={index}> {item.text}</Text>
-                                    <View style={styles.leftArrow} />
-                                    <View style={styles.leftArrowOverlap} />
-                                </View>
-                            )
-                        }
-                    }}
-                    keyExtractor={(item, index) => index.toString()}
-                />
-            </View>
-            <View style={{ flex: 0.15, backgroundColor: 'white' }}>
-                <View style={{ position: 'absolute', bottom: keyboardOffset, backgroundColor: 'white', flexDirection: 'row', padding: 12, justifyContent: 'center', alignContent: 'center' }} >
-                    <TextInput style={styles.inputStyle} value={message} onChangeText={setMessage} onSubmitEditing={Keyboard.dismiss}></TextInput>
-                    <TouchableOpacity onPress={() => handleSend()}>
-                        <Ionicons name="send" size={24} style={{ marginTop: 4, marginLeft: 8 }} />
-                    </TouchableOpacity>
+        <ImageBackground source={backImage} resizeMode="cover" style={{ flex: 1 }}>
+            <View style={styles.container}>
+                <View style={{ flex: 1.9 }}>
+                    <FlatList
+                        data={chat_log}
+                        ref={flatListRef}
+                        contentContainerStyle={{ flexDirection: 'column-reverse', paddingTop: 16 }}
+                        inverted
+                        renderItem={({ item, index }) => {
+                            rowId = { index }
+                            if (item.isUser) {
+                                return (
+                                    <View style={styles.rightBubble} key={index}>
+                                        <Text style={{ fontSize: 16, color: "#fff", }} key={index}> {item.text}</Text>
+                                        <View style={styles.rightArrow} />
+                                        <View style={styles.rightArrowOverlap} />
+                                    </View>
+                                )
+                            } else {
+                                return (
+                                    <View style={styles.leftBubble} key={index}>
+                                        <Text style={{ fontSize: 16, color: "#000", justifyContent: "center" }} key={index}> {item.text}</Text>
+                                        <View style={styles.leftArrow} />
+                                        <View style={styles.leftArrowOverlap} />
+                                    </View>
+                                )
+                            }
+                        }}
+                        keyExtractor={(item, index) => index.toString()}
+                    />
+                </View>
+                <View style={{ flex: 0.15 }}>
+                    <View style={{ position: 'absolute', bottom: keyboardOffset, flexDirection: 'row', paddingVertical: 12, justifyContent: 'center', alignContent: 'center', marginHorizontal: 10, }} >
+                        <TextInput style={styles.inputStyle} value={message} onChangeText={setMessage} onSubmitEditing={Keyboard.dismiss} placeholder='Give me health information regarding ...' placeholderTextColor={`${COLORS.DARK}40`}></TextInput>
+                        <TouchableOpacity onPress={() => handleSend()}>
+                            <Ionicons name="send" size={24} style={{ marginTop: 4, marginLeft: 8 }} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
-        </View>
+        </ImageBackground>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        // backgroundColor: '#fff',
     },
     rightBubble: {
         backgroundColor: "#0078fe",
@@ -199,6 +204,7 @@ const styles = StyleSheet.create({
         borderRadius: 100,
         fontSize: 16,
         padding: 8,
+        backgroundColor: '#fff'
     },
 
     image: {
