@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, KeyboardAvoidingView, ScrollView, ActivityIndicator } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity, TextInput, KeyboardAvoidingView, ScrollView, ActivityIndicator, Switch } from "react-native";
 import Constants from "expo-constants"
 import { COLORS } from "../../src/utils/constants";
 import { useState } from "react";
@@ -16,6 +16,7 @@ const CreatePostPage = () => {
     const [image, setImage] = useState(null);
     const [dishName, setDishName] = useState('');
     const [caption, setCaption] = useState('');
+    const [isRecipe, setIsRecipe] = useState(false);
     const [submitted, setSubmitted] = useState(false);
 
     const userUid = useSelector((state) => state.user.uid);
@@ -62,7 +63,6 @@ const CreatePostPage = () => {
 
     const uploadImageAsync = async (uri, imageId) => {
         const response = await fetch(uri);
-        console.log(response);
         const blob = await response.blob(); // Convert the fetched response into a blob
 
         const filename = `${imageId}.jpg`;
@@ -79,23 +79,37 @@ const CreatePostPage = () => {
         <KeyboardAvoidingView style={styles.container} behavior={'height'}>
             <View style={styles.header}>
                 <Text style={{ paddingHorizontal: 24, fontSize: 28, color: 'white', fontWeight: 'bold' }}>Post</Text>
-                <View style={{ height: 10}}/>
+                <View style={{ height: 10 }} />
                 <Text style={{ paddingHorizontal: 24, fontSize: 14, color: 'white', fontWeight: 'bold' }}>Share and motivate your friends to eat healthy.</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 24, marginTop: 10 }}>
+                    <Switch value={isRecipe} onChange={() => setIsRecipe(!isRecipe)} trackColor={{ false: '#fff', true: '#fff' }} thumbColor={isRecipe ? COLORS.PRIMARY : '#fff'}></Switch>
+                    <Text style={{ paddingHorizontal: 10, fontSize: 14, color: 'white', fontWeight: 'bold' }}>Sharing Recipe? </Text>
+                </View>
             </View>
             {/* <Text style={styles.header}>
                 POST
             </Text> */}
             <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 20 }}>
-                <TouchableOpacity onPress={pickImage}>
-                    <View style={{
-                        alignItems: "center"
-                    }}>
-                        {image ? <Image source={{ uri: image }} style={styles.image} /> : <Image source={dummyImage} style={styles.image} />}
-                        <Text style={styles.uploadText}>Upload Image</Text>
-                    </View>
-                </TouchableOpacity>
-                <TextInput style={styles.input} placeholder="Dish Name.." value={dishName} onChangeText={setDishName} placeholderTextColor={`${COLORS.DARK}cc`} />
-                <TextInput style={styles.inputCaption} placeholder="Caption (optional).." value={caption} onChangeText={setCaption} placeholderTextColor={`${COLORS.DARK}cc`} multiline textAlignVertical="top" />
+                {!isRecipe ? (
+                    <>
+                        <TouchableOpacity onPress={pickImage}>
+                            <View style={{
+                                alignItems: "center"
+                            }}>
+                                {image ? <Image source={{ uri: image }} style={styles.image} /> : <Image source={dummyImage} style={styles.image} />}
+                                <Text style={styles.uploadText}>Upload Image</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TextInput style={styles.input} placeholder="Dish Name.." value={dishName} onChangeText={setDishName} placeholderTextColor={`${COLORS.DARK}cc`} />
+                        <TextInput style={styles.inputCaption} placeholder="Caption (optional).." value={caption} onChangeText={setCaption} placeholderTextColor={`${COLORS.DARK}cc`} multiline textAlignVertical="top" />
+                    </>
+                ) : (
+                    <>
+                        <TextInput style={styles.input} placeholder="Dish Name.." value={dishName} onChangeText={setDishName} placeholderTextColor={`${COLORS.DARK}cc`} />
+                        <TextInput style={styles.inputCaption} placeholder="Ingredients.." value={caption} onChangeText={setCaption} placeholderTextColor={`${COLORS.DARK}cc`} multiline textAlignVertical="top" />
+                        <TextInput style={styles.inputRecipe} placeholder="Step-by-step process.." value={caption} onChangeText={setCaption} placeholderTextColor={`${COLORS.DARK}cc`} multiline textAlignVertical="top" />
+                    </>
+                )}
 
                 {submitted ? (
                     <Text style={styles.buttonText}>
@@ -151,6 +165,13 @@ const styles = StyleSheet.create({
         fontSize: 16,
         paddingVertical: 10,
         minHeight: 100,
+    },
+    inputRecipe: {
+        marginHorizontal: 12,
+        width: '100%',
+        fontSize: 16,
+        paddingVertical: 10,
+        minHeight: 200,
     },
     buttonText: {
         fontSize: 20,

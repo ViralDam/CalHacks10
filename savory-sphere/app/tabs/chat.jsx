@@ -18,18 +18,27 @@ const ChatPage = () => {
     const [chat_log, setChat_log] = useState([{ 'text': startMsg, 'isUser': false }]);
     const [keyboardOffset, setKeyboardOffset] = useState(0);
     const [message, setMessage] = useState('');
-    const [loading, setLoading] = useState(false); 
+    const [loading, setLoading] = useState(false);
 
     const { caption } = useLocalSearchParams();
+    const { recipename } = useLocalSearchParams();
 
 
     useEffect(() => {
-        if(caption) {
+        if (caption) {
             const newChat = [...chat_log, { 'text': `Give me healthy recipe for ${caption}`, 'isUser': true }]
             setChat_log(newChat);
             getResponse(newChat);
         }
-    }, [caption])
+    }, [caption]);
+
+    useEffect(() => {
+        if (recipename) {
+            const newChat = [...chat_log, { 'text': `Give me complete healthy recipe for ${recipename}`, 'isUser': true }]
+            setChat_log(newChat);
+            getResponse(newChat);
+        }
+    }, [recipename]);
 
     const getPrompt = (chat_log) => {
         let story = '';
@@ -131,7 +140,7 @@ const ChatPage = () => {
                     <View style={{ position: 'absolute', bottom: keyboardOffset, flexDirection: 'row', paddingVertical: 12, justifyContent: 'center', alignContent: 'center', marginHorizontal: 10, }} >
                         <TextInput style={styles.inputStyle} value={message} onChangeText={setMessage} onSubmitEditing={Keyboard.dismiss} placeholder='Give me health information regarding ...' placeholderTextColor={`${COLORS.DARK}40`}></TextInput>
                         <TouchableOpacity onPress={() => handleSend()}>
-                            <Ionicons name="send" size={24} style={{ marginTop: 4, marginLeft: 8 }} color={COLORS.DARK}/>
+                            <Ionicons name="send" size={24} style={{ marginTop: 4, marginLeft: 8 }} color={COLORS.DARK} />
                         </TouchableOpacity>
                     </View>
                 </View>

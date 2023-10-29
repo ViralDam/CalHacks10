@@ -2,8 +2,8 @@ import 'dotenv/config'
 
 export default {
   "expo": {
-    "name": "savory-sphere",
-    "slug": "savory-sphere",
+    "name": "Eat-O-Pia",
+    "slug": "eat-o-pia",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

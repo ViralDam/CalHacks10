@@ -6,6 +6,7 @@ import Slider from '@react-native-community/slider';
 import { FontAwesome } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import { Image } from 'expo-image';
+import { getFeed } from '../../getData';
 
 const logo = require('../../assets/images/logo-white.png');
 
@@ -29,92 +30,94 @@ const Tabs = () => {
         }, 1000);
     };
 
-    const [feed, setFeed] = useState([
-        {
-            id: '1',
-            user: 'Akaash',
-            caption: 'Love eating mushroom pasta!',
-            profileImageUrl: 'https://scontent-sjc3-1.cdninstagram.com/v/t51.2885-19/361184507_1472203700196554_242700070845021744_n.jpg?stp=dst-jpg_s320x320&_nc_ht=scontent-sjc3-1.cdninstagram.com&_nc_cat=102&_nc_ohc=198BMLIvedcAX_1D7nc&edm=AOQ1c0wBAAAA&ccb=7-5&oh=00_AfAUAC9vy5C4DYsNAJB9jX1iLdCbASNAxt5_8cpaeJLfjA&oe=65421F20&_nc_sid=8b3546',
-            imageUrl: 'https://assets.bonappetit.com/photos/5d4ddd602c815a00080f9771/1:1/w_2240,c_limit/BA-0919-Creamy-Pasta-Crispy-Mushroom-Playbook.jpg',
-            sliderValue: 0,
-            userRatings: 72,
-            dishName: 'Mushroom Pasta'
-        },
-        {
-            id: '2',
-            user: 'Mr Robot',
-            caption: 'Pizza',
-            profileImageUrl: "https://www.nme.com/wp-content/uploads/2017/06/mrrobot_s2_cast_rami-malek2-1392x783.jpg",
-            imageUrl: 'https://www.foodiesfeed.com/wp-content/uploads/2015/03/basic-italian-pizza-margherita.jpg',
-            sliderValue: 0,
-            userRatings: 40,
-            dishName: 'Pizza'
-        },
-        {
-            id: '3',
-            user: 'Mr Robot',
-            caption: 'I <3 Eggs',
-            profileImageUrl: "https://www.nme.com/wp-content/uploads/2017/06/mrrobot_s2_cast_rami-malek2-1392x783.jpg",
-            imageUrl: 'https://i2.wp.com/www.downshiftology.com/wp-content/uploads/2018/03/How-to-Boil-Eggs-main-1-2.jpg',
-            sliderValue: 0,
-            userRatings: 80,
-            dishName: 'Boiled Eggs'
-        }
-    ]);
+    const [feed, setFeed] = useState(getFeed());
 
-    const renderItem = ({ item }) => (
-        <View style={styles.item}>
-            <View style={styles.userSection}>
+    const renderItem = ({ item }) => {
+        if (item.type == 'recipe') {
+            console.log("test")
+            return <View style={styles.item}>
                 <View style={styles.userInfo}>
                     <Image source={{ uri: item.profileImageUrl }} style={styles.profileImage} />
-                    <Text style={styles.username}>{item.user}</Text>
-                    <View style={styles.buttonContainer}>
-                        <Link
-                            style={styles.bakeButton}
-                            href={{ pathname: 'tabs/chat', params: { caption: item.dishName } }}
-                        >
-                            <Text style={styles.buttonText}>Ask Avo</Text>
-                            <Text style={styles.avoemoji}>🥑</Text>
-                        </Link>
+                    <Text style={styles.username}>{`${item.user} shared a secret recipe.`}</Text>
+
+                </View>
+                <View style={{ padding: 10 }}>
+                    <View style={{ flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', marginRight: 10 }}>Dish:</Text>
+                        <Text>{item.dishName}</Text>
+                    </View>
+                    <Text style={{ textAlign: 'justify', padding: 10 }}>{item.summary}</Text>
+                    <View style={{ flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', marginRight: 10 }}>{`According to Avo, recipe is ${item.userRatings}% healthy`}</Text>
+                    </View>
+                    <View style={{ width: '100%', height: 50 }}>
+                        <View style={styles.buttonContainer}>
+                            <Link
+                                style={styles.bakeButton2}
+                                href={{ pathname: 'tabs/chat', params: { recipename: item.dishName } }}
+                            >
+                                <Text style={styles.buttonText}>Get Full Recipe</Text>
+                                <Text style={styles.avoemoji}>🥑</Text>
+                            </Link>
+                        </View>
                     </View>
                 </View>
             </View>
-            <Image source={{ uri: item.imageUrl }} style={styles.image} />
-            <View style={styles.sliderContainer}>
-                <Text style={styles.emoji}>🍔</Text>
-                <Slider
-                    style={styles.slider}
-                    value={item.sliderValue}
-                    onValueChange={(newValue) => updateSliderValue(item.id, newValue)}
-                    minimumValue={0}
-                    maximumValue={10}
-                    onSlidingComplete={(value) => handleSliderComplete(item.id, value)}
-                    minimumTrackTintColor={COLORS.PRIMARY}
-                    maximumTrackTintColor="#000000"
-                />
-                <Text style={styles.emoji}>🥦</Text>
-                <Text style={styles.percentageText}>
-                    {item.userRatings && item.rating && (
-                        <>
-                            <FontAwesome name="users" size={24} color="black" />
-                            <Text style={styles.percentageText}>
-                                {`${item.userRatings}%`}
-                            </Text>
-                        </>
-                    )}
+        }
+        return (
+            <View style={styles.item}>
+                <View style={styles.userSection}>
+                    <View style={styles.userInfo}>
+                        <Image source={{ uri: item.profileImageUrl }} style={styles.profileImage} />
+                        <Text style={styles.username}>{item.user}</Text>
+                        <View style={styles.buttonContainer}>
+                            <Link
+                                style={styles.bakeButton}
+                                href={{ pathname: 'tabs/chat', params: { caption: item.dishName } }}
+                            >
+                                <Text style={styles.buttonText}>Ask Avo</Text>
+                                <Text style={styles.avoemoji}>🥑</Text>
+                            </Link>
+                        </View>
+                    </View>
+                </View>
+                <Image source={{ uri: item.imageUrl }} style={styles.image} />
+                <View style={styles.sliderContainer}>
+                    <Text style={styles.emoji}>🍔</Text>
+                    <Slider
+                        style={styles.slider}
+                        value={item.sliderValue}
+                        onValueChange={(newValue) => updateSliderValue(item.id, newValue)}
+                        minimumValue={0}
+                        maximumValue={10}
+                        onSlidingComplete={(value) => handleSliderComplete(item.id, value)}
+                        minimumTrackTintColor={COLORS.PRIMARY}
+                        maximumTrackTintColor="#000000"
+                    />
+                    <Text style={styles.emoji}>🥦</Text>
+                    <Text style={styles.percentageText}>
+                        {item.userRatings && item.rating && (
+                            <>
+                                <FontAwesome name="users" size={24} color="black" />
+                                <Text style={styles.percentageText}>
+                                    {`${item.userRatings}%`}
+                                </Text>
+                            </>
+                        )}
+                    </Text>
+                </View>
+                <Text style={styles.caption}>
+                    <Text style={styles.username}>{item.user}</Text>{" "}
+                    {item.caption}
                 </Text>
-            </View>
-            <Text style={styles.caption}>
-                <Text style={styles.username}>{item.user}</Text>{" "}
-                {item.caption}
-            </Text>
 
-        </View>
-    );
+            </View>
+        )
+    };
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <View style={{paddingHorizontal: 80}}>
+            <View style={{ paddingHorizontal: 80 }}>
                 <Image source={logo} style={{ width: '100%', aspectRatio: 470 / 141 }} />
             </View>
             <FlatList
@@ -144,6 +147,18 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         borderRadius: 15,
         width: 100,
+    },
+    bakeButton2: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'transparent',
+        borderColor: 'green',
+        borderWidth: 1,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        borderRadius: 15,
+        width: 150,
+        marginTop: 10
     },
     buttonText: {
         color: 'green', // Text color set to green
