@@ -29,7 +29,7 @@ const Profile = () => {
                 <Text style={styles.nameText}>{displayName}</Text>
                 <Text style={styles.bioText}>{bio}</Text>
                 <View style={{flexDirection:'row', marginVertical: 24}}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => router.push('tabs/profile/foodies')}>
                         <Text style={styles.statsNum}>{foodieCount}</Text>
                         <Text >Foodies</Text>
                     </TouchableOpacity>
