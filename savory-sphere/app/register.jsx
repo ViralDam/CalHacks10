@@ -4,6 +4,8 @@ import { useState } from "react";
 import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity } from "react-native";
 import { auth } from "../src/firebase";
 import { Image } from "expo-image";
+import Checkbox from 'expo-checkbox';
+import * as Linking from 'expo-linking';
 
 const logo = require('../assets/images/logo.png');
 const cal_logo = require('../assets/images/cal-logo.png');
@@ -11,6 +13,7 @@ const cal_logo = require('../assets/images/cal-logo.png');
 const RegisterPage = () => {
     const [email, setEmail] = useState('')
     const [pass, setPass] = useState('')
+    const [isChecked, setChecked] = useState(false);
 
     const handleRegisterPress = () => {
         createUserWithEmailAndPassword(auth, email, pass)
@@ -46,6 +49,15 @@ const RegisterPage = () => {
                 <TouchableOpacity onPress={handleRegisterPress} style={{ backgroundColor: `#637d61`, borderBottomStartRadius: 10, borderBottomEndRadius: 10, padding: 10 }}>
                     <Text style={{ color: '#fff', textAlign: 'center', fontWeight: '500' }}>Register</Text>
                 </TouchableOpacity>
+            </View>
+            <Text style={{marginTop: 5, color: 'blue', textDecorationStyle: 'solid', textDecorationLine: 'underline'}} onPress={() => Linking.openURL('https://docs.google.com/document/d/1Y9clzTOKDakoxKPRweUQsJNw1kTOyEg0jmvbmqQZD7o/edit')}> Community Guidelines</Text>
+            <View style={{ flexDirection: "row", marginTop: 5, alignItems: 'center' }}>
+                <Checkbox 
+                style={{marginRight: 10}}
+                value={isChecked}
+                    onValueChange={setChecked}
+                    color={isChecked ? '#4630EB' : undefined} 
+                    /><Text>I understand and accept.</Text>
             </View>
             <TouchableOpacity onPress={() => router.back()}>
                 <Text style={{ marginTop: 5, color: 'blue' }}>

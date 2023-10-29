@@ -1,12 +1,13 @@
 import { router, Link } from 'expo-router'
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, FlatList, SafeAreaView, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, FlatList, SafeAreaView, TouchableOpacity, Dimensions } from "react-native";
 import { COLORS } from '../../src/utils/constants';
 import Slider from '@react-native-community/slider';
 import { FontAwesome } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import { Image } from 'expo-image';
 import { getFeed } from '../../getData';
+import Carousel from 'react-native-reanimated-carousel';
 
 const logo = require('../../assets/images/logo-white.png');
 
@@ -17,6 +18,10 @@ const Tabs = () => {
             item.id === itemId ? { ...item, sliderValue: newValue } : item
         ));
     };
+
+    const challenges = ['https://static.wixstatic.com/media/78f01e_4cad7cf5e4df4bb4bac80f005e3f43c7~mv2.jpg/v1/fit/w_1000%2Ch_1000%2Cal_c%2Cq_80,enc_auto/file.jpg', 'https://www.blogilates.com/wp-content/uploads/2018/08/WaterChallenge-1.jpg', 'https://detoxchallenge.weebly.com/uploads/1/7/1/9/17191398/9413750.jpg'];
+
+    const width = Dimensions.get('window').width;
     const [sliderCompleted, setSliderCompleted] = useState(false);
 
     const handleSliderComplete = (itemId, value) => {
@@ -34,7 +39,6 @@ const Tabs = () => {
 
     const renderItem = ({ item }) => {
         if (item.type == 'recipe') {
-            console.log("test")
             return <View style={styles.item}>
                 <View style={styles.userInfo}>
                     <Image source={{ uri: item.profileImageUrl }} style={styles.profileImage} />
@@ -87,7 +91,7 @@ const Tabs = () => {
                     <Slider
                         style={styles.slider}
                         value={item.sliderValue}
-                        onValueChange={(newValue) => updateSliderValue(item.id, newValue)}
+                        // onValueChange={(newValue) => updateSliderValue(item.id, newValue)}
                         minimumValue={0}
                         maximumValue={10}
                         onSlidingComplete={(value) => handleSliderComplete(item.id, value)}
@@ -125,6 +129,43 @@ const Tabs = () => {
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
                 style={styles.container}
+                ListHeaderComponent={() => {
+                    return (
+                        <View style={{ padding: 12 }}>
+                            <Text style={{ fontSize: 24, marginVertical: 8}}>Monthly Challenges</Text>
+                            {/* <FlatList
+                                horizontal
+                                renderItem={({item, index}) => {
+                                    <Text key={index}>Hi</Text>
+                                }}
+                                data={[1,2,3]}
+                            /> */}
+                            <Carousel
+                                loop
+                                width={width - 25}
+                                height={width / 2}
+                                autoPlay={true}
+                                data={challenges}
+                                scrollAnimationDuration={5000}
+                                // onSnapToItem={(index) => console.log('current index:', index)}
+                                renderItem={({ index }) => (
+                                    <View
+                                        style={{
+                                            flex: 1,
+                                            // borderWidth: 1,
+                                            justifyContent: 'center',
+                                        }}
+                                    >
+                                        <Image source={{uri: challenges[index]}} style={{ flex: 1 }}/>
+                                        {/* <Text style={{ textAlign: 'center', fontSize: 30 }}>
+                                            {index}
+                                        </Text> */}
+                                    </View>
+                                )}
+                            />
+                        </View>
+                    )
+                }}
             />
         </SafeAreaView>
     );
