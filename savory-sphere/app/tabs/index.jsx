@@ -1,11 +1,15 @@
 import { router } from 'expo-router'
 import React, { useState, useEffect } from 'react';
-import { Text, View, Image, StyleSheet, FlatList, SafeAreaView } from "react-native";
+import { Text, View, Image, StyleSheet, FlatList, SafeAreaView,TouchableOpacity } from "react-native";
 import { COLORS } from '../../src/utils/constants';
 import Slider from '@react-native-community/slider';
 import { FontAwesome } from '@expo/vector-icons';
 
 const Tabs = () => {
+
+    const handlePress = () => {
+
+    };
     const updateSliderValue = (itemId, newValue) => {
         setFeed(feed.map(item =>
           item.id === itemId ? { ...item, sliderValue: newValue } : item
@@ -60,6 +64,15 @@ const Tabs = () => {
                 <View style={styles.userInfo}>
                     <Image source={{ uri: item.profileImageUrl }} style={styles.profileImage} />
                     <Text style={styles.username}>{item.user}</Text>
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity 
+                            style={styles.bakeButton} 
+                            onPress={handlePress}
+                        >
+                            <Text style={styles.buttonText}>Ask Avo</Text>
+                            <Text style={styles.avoemoji}>🥑</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
             <Image source={{ uri: item.imageUrl }} style={styles.image} />
@@ -113,6 +126,29 @@ const Tabs = () => {
 export default Tabs;
 
 const styles = StyleSheet.create({
+  buttonContainer: {
+    position: 'absolute',
+    right: 10,
+  },
+  bakeButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: 'transparent',
+      borderColor: 'green',
+      borderWidth: 1,
+      paddingHorizontal: 10,
+      paddingVertical: 5,
+      borderRadius: 15,
+      width: 100,
+  },
+  buttonText: {
+      color: 'green', // Text color set to green
+      marginRight: 5, // Margin to separate text from emoji
+  },
+  avoemoji: {
+      fontSize: 20, // Adjust size as needed
+      color: 'green', // Optional, if you want to color the emoji
+  },
   safeArea: {
     flex: 1,
     backgroundColor: '#fff',
@@ -136,6 +172,7 @@ const styles = StyleSheet.create({
   userInfo: {
     flexDirection: 'row',
     alignItems: 'center',
+    width: '100%'
   },
   profileImage: {
     width: 40,
@@ -163,7 +200,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   emoji: {
-    fontSize: 24,
+    fontSize: 20,
   },
   container: {
     flex: 1,
