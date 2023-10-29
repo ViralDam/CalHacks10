@@ -1,22 +1,209 @@
-import { StyleSheet, View, Text } from "react-native";
+import { FlatList, Text, TextInput, TouchableOpacity, View, Keyboard, StyleSheet } from 'react-native';
+import { Ionicons } from "@expo/vector-icons";
+import { useRef, useState, useEffect } from 'react';
+import Constants from 'expo-constants';
+import axios from 'axios';
+
+
+const _endpoint = `https://api.together.xyz/inference`
+const startPrompt = `Context: This is conversation between chat bot that can help users with recipe, healthy food queries. Bot always restricts quries oly related to healthy eating.\n\n`;
+
+const startMsg = `👋 Hi there! I'm Avo, your foodie friend in Eat-O-Pia! 🥑 Ready to cook up some fun? Ask me anything about recipes, healthy eats, or just chat about your favorite flavors! 🍽️`
 
 const ChatPage = () => {
+    const [chat_log, setChat_log] = useState([{ 'text': startMsg, 'isUser': false }]);
+    const [keyboardOffset, setKeyboardOffset] = useState(0);
+    const [message, setMessage] = useState('');
+
+    const getPrompt = (chat_log) => {
+        let story = '';
+        chat_log.forEach(chat => {
+            if (chat.isUser) {
+                story += 'User: ' + chat.text + '<end>';
+            }
+            else {
+                story += 'Bot: ' + chat.text + '<end>';
+            }
+        });
+        story += 'Bot: '
+        return startPrompt + story;
+    }
+
+    useEffect(() => {
+        Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
+        Keyboard.addListener('keyboardDidHide', _keyboardDidHide);
+
+        // cleanup function
+        return () => {
+            Keyboard.removeAllListeners('');
+        };
+    }, []);
+
+    const _keyboardDidShow = (event) => setKeyboardOffset(event.endCoordinates.height - 90);
+    const _keyboardDidHide = () => setKeyboardOffset(0);
+
+    const flatListRef = useRef();
+
+    const handleSend = () => {
+        if (message) {
+            const newChat =  [...chat_log, { 'text': message, 'isUser': true }]
+            setChat_log(newChat);
+            Keyboard.dismiss();
+            setMessage('');
+            getResponse(newChat);
+        }
+    }
+
+    const getResponse = async (newChat) => {
+        axios.post(_endpoint, {
+            "model": "togethercomputer/llama-2-70b-chat",
+            "max_tokens": 512,
+            "prompt": getPrompt(newChat),
+            "request_type": "language-model-inference",
+            "temperature": 0.7,
+            "top_p": 0.7,
+            "top_k": 50,
+            "repetition_penalty": 1,
+            "type": "language",
+            "stop": "<end>"
+        }, {
+            headers: {
+                Authorization: `Bearer ${Constants?.expoConfig?.extra?.togetherApiKey}`
+            }
+        }).then((response) => {
+            // console.log(response.data.output.choices[0].text);
+            setChat_log([...newChat, { 'text': response.data.output.choices[0].text.trim().slice(0,-5), 'isUser': false }]);
+        }, (error) => {
+            console.log(error);
+        });
+    }
+
     return (
         <View style={styles.container}>
-            <Text>
-                Chat
-            </Text>
+            <View style={{ flex: 1 }}>
+                <FlatList
+                    data={chat_log}
+                    ref={flatListRef}
+                    contentContainerStyle={{ flexDirection: 'column-reverse', paddingTop: 16 }}
+                    inverted
+                    renderItem={({ item, index }) => {
+                        rowId = { index }
+                        if (item.isUser) {
+                            return (
+                                <View style={styles.rightBubble} key={index}>
+                                    <Text style={{ fontSize: 16, color: "#fff", }} key={index}> {item.text}</Text>
+                                    <View style={styles.rightArrow} />
+                                    <View style={styles.rightArrowOverlap} />
+                                </View>
+                            )
+                        } else {
+                            return (
+                                <View style={styles.leftBubble} key={index}>
+                                    <Text style={{ fontSize: 16, color: "#000", justifyContent: "center" }} key={index}> {item.text}</Text>
+                                    <View style={styles.leftArrow} />
+                                    <View style={styles.leftArrowOverlap} />
+                                </View>
+                            )
+                        }
+                    }}
+                    keyExtractor={(item, index) => index.toString()}
+                />
+            </View>
+            <View style={{ flex: 0.15, backgroundColor: 'white' }}>
+                <View style={{ position: 'absolute', bottom: keyboardOffset, backgroundColor: 'white', flexDirection: 'row', padding: 12, justifyContent: 'center', alignContent: 'center' }} >
+                    <TextInput style={styles.inputStyle} value={message} onChangeText={setMessage} onSubmitEditing={Keyboard.dismiss}></TextInput>
+                    <TouchableOpacity onPress={() => handleSend()}>
+                        <Ionicons name="send" size={24} style={{ marginTop: 4, marginLeft: 8 }} />
+                    </TouchableOpacity>
+                </View>
+            </View>
         </View>
     );
 }
-
-export default ChatPage;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
+    },
+    rightBubble: {
+        backgroundColor: "#0078fe",
+        padding: 10,
+        marginLeft: '25%',
+        borderRadius: 5,
+        marginTop: 5,
+        marginRight: "5%",
+        maxWidth: '70%',
+        alignSelf: 'flex-end',
+        borderRadius: 20,
+    },
+
+    rightArrow: {
+        position: "absolute",
+        backgroundColor: "#0078fe",
+        width: 20,
+        height: 25,
+        bottom: 0,
+        borderBottomLeftRadius: 25,
+        right: -10
+    },
+
+    rightArrowOverlap: {
+        position: "absolute",
+        backgroundColor: "#fefefe",
+        width: 20,
+        height: 35,
+        bottom: -6,
+        borderBottomLeftRadius: 18,
+        right: -20
+
+    },
+
+    /*Arrow head for recevied messages*/
+    leftBubble: {
+        backgroundColor: "#dedede",
+        padding: 10,
+        borderRadius: 5,
+        marginTop: 5,
+        marginLeft: "5%",
+        maxWidth: '70%',
+        alignSelf: 'flex-start',
+        borderRadius: 20,
+    },
+
+    leftArrow: {
+        position: "absolute",
+        backgroundColor: "#dedede",
+        width: 20,
+        height: 25,
+        bottom: 0,
+        borderBottomRightRadius: 25,
+        left: -10
+    },
+
+    leftArrowOverlap: {
+        position: "absolute",
+        backgroundColor: "#fefefe",
+        width: 20,
+        height: 35,
+        bottom: -6,
+        borderBottomRightRadius: 18,
+        left: -20
+
+    },
+
+    inputStyle: {
+        flex: 1,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        borderRadius: 100,
+        fontSize: 16,
+        padding: 8,
+    },
+
+    image: {
+        flex: 1,
     },
 });
+
+export default ChatPage;
