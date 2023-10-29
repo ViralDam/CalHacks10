@@ -1,12 +1,15 @@
 
-import { SET_BIO, SET_DOB, SET_EMAIL, SET_NAME, SET_PHOTO, SET_UID } from "./actions";
+import { SET_BIO, SET_DOB, SET_EMAIL, SET_FOODIE, SET_NAME, SET_PHOTO, SET_UID } from "./actions";
 
 const initialState = {
     user: {
         uid: '',
         displayName: 'Guest',
         email: '',
-        photoUrl: ''
+        photoUrl: '',
+        bio: '',
+        dob: '',
+        foodies: [],
     }
 }
 
@@ -57,6 +60,13 @@ const mainReducer = (
                     dob: action.dob,
                 }
             };
+        case SET_FOODIE:
+            return {
+                ...state, user: {
+                    ...state.user,
+                    foodies: action.foodie
+                }
+            }
         default:
             return state;
     }

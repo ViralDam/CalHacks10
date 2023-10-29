@@ -96,7 +96,7 @@ const ChatPage = () => {
     }
 
     return (
-        <ImageBackground source={backImage} resizeMode="cover" style={{ flex: 1 }}>
+        <ImageBackground source={backImage} resizeMode="cover" style={{ flex: 1, paddingTop: Constants.statusBarHeight }}>
             <View style={styles.container}>
                 <View style={{ flex: 1.9 }}>
                     <FlatList

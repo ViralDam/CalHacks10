@@ -4,6 +4,7 @@ export const SET_PHOTO = "SET_PHOTO";
 export const SET_UID = "SET_UID";
 export const SET_BIO = "SET_BIO";
 export const SET_DOB = "SET_DOB";
+export const SET_FOODIE = "SET_FOODIE";
 
 export function setUserName(name) {
     return {
@@ -44,5 +45,12 @@ export function setUserDob(dob) {
     return {
         type: SET_DOB,
         dob,
+    };
+}
+
+export function setFoodie(foodie) {
+    return {
+        type: SET_FOODIE,
+        foodie,
     };
 }

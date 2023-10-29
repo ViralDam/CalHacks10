@@ -3,6 +3,10 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity } from "react-native";
 import { auth } from "../src/firebase";
+import { Image } from "expo-image";
+
+const logo = require('../assets/images/logo.png');
+const cal_logo = require('../assets/images/cal-logo.png');
 
 const RegisterPage = () => {
     const [email, setEmail] = useState('')
@@ -31,16 +35,26 @@ const RegisterPage = () => {
 
     return (
         <View style={styles.container}>
-            <Text>Register</Text>
-            <TextInput style={styles.input} inputMode='email' onChangeText={setEmail} />
-            <TextInput style={styles.input} onChangeText={setPass} secureTextEntry />
-            <Button onPress={handleRegisterPress} title="Register" />
+            <Image style={{ width: '70%', aspectRatio: 470 / 141, marginBottom: 40 }} source={logo} />
+            <View style={{ width: '70%', borderWidth: 0.5, borderRadius: 10, }}>
+                <TextInput style={styles.input} inputMode='email' onChangeText={setEmail} placeholder="Email" />
+                <View style={{ width: '100%', borderWidth: 0.5, borderRadius: 10, }} />
+                <TextInput style={styles.input} onChangeText={setPass} secureTextEntry placeholder="Password" />
+                <View style={{ width: '100%', borderWidth: 0.5, borderRadius: 10, }} />
+                <TextInput style={styles.input} secureTextEntry placeholder="Confirm Password" />
+                <View style={{ width: '100%', borderWidth: 0.5, borderRadius: 10, }} />
+                <TouchableOpacity onPress={handleRegisterPress} style={{ backgroundColor: `#637d61`, borderBottomStartRadius: 10, borderBottomEndRadius: 10, padding: 10 }}>
+                    <Text style={{ color: '#fff', textAlign: 'center', fontWeight: '500' }}>Register</Text>
+                </TouchableOpacity>
+            </View>
             <TouchableOpacity onPress={() => router.back()}>
-                <Text>
+                <Text style={{ marginTop: 5, color: 'blue' }}>
                     Have account?
                 </Text>
             </TouchableOpacity>
-        </View>
+            <Image style={{ width: '25%', aspectRatio: 640 / 827, marginTop: 40 }} source={cal_logo} />
+            <Text>Made with ❤️</Text>
+        </View >
     );
 }
 
@@ -50,13 +64,13 @@ const styles = StyleSheet.create({
     input: {
         height: 40,
         margin: 12,
-        width: '50%',
-        borderWidth: 1,
+        width: '100%',
+        borderWidth: 0.1,
         padding: 10,
     },
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#e7f7e3',
         alignItems: 'center',
         justifyContent: 'center',
     },

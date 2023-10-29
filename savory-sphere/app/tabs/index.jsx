@@ -1,9 +1,13 @@
 import { router, Link } from 'expo-router'
 import React, { useState, useEffect } from 'react';
-import { Text, View, Image, StyleSheet, FlatList, SafeAreaView, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, FlatList, SafeAreaView, TouchableOpacity } from "react-native";
 import { COLORS } from '../../src/utils/constants';
 import Slider from '@react-native-community/slider';
 import { FontAwesome } from '@expo/vector-icons';
+import Constants from 'expo-constants';
+import { Image } from 'expo-image';
+
+const logo = require('../../assets/images/logo-white.png');
 
 const Tabs = () => {
 
@@ -110,8 +114,8 @@ const Tabs = () => {
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <View style={styles.header}>
-                <Text style={styles.headerText}>Eat-o-pia</Text>
+            <View style={{paddingHorizontal: 80}}>
+                <Image source={logo} style={{ width: '100%', aspectRatio: 470 / 141 }} />
             </View>
             <FlatList
                 data={feed}
@@ -151,12 +155,9 @@ const styles = StyleSheet.create({
     },
     safeArea: {
         flex: 1,
-        backgroundColor: '#fff',
-    },
-    header: {
+        paddingTop: Constants.statusBarHeight,
         backgroundColor: COLORS.PRIMARY,
         padding: 15,
-        alignItems: 'center',
     },
     headerText: {
         fontSize: 24,
@@ -204,6 +205,7 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
+        backgroundColor: '#fefefe'
     },
     item: {
         backgroundColor: '#fff',

@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import { auth, db } from '../src/firebase';
 import { Redirect, router } from 'expo-router';
 import { useDispatch } from 'react-redux';
-import { setUserBio, setUserDob, setUserEmail, setUserName, setUserPhoto, setUserUid } from '../src/redux/actions';
+import { setFoodie, setUserBio, setUserDob, setUserEmail, setUserName, setUserPhoto, setUserUid } from '../src/redux/actions';
 import { doc, getDoc, Timestamp } from "firebase/firestore";
 
 export default function AppLayout() {
@@ -37,6 +37,7 @@ export default function AppLayout() {
                     dispatch(setUserBio(docData.bio))
                     dispatch(setUserDob(timestamp.toDate().toString()))
                     dispatch(setUserUid(user.uid))
+                    dispatch(setFoodie(docData.foodies))
                     router.replace('tabs');
                 } else {
                     console.log("No such document!");
@@ -55,11 +56,6 @@ export default function AppLayout() {
         )
     }
 
-
-
-    //     return (
-    //         <Redirect href={'tabs'} />
-    //     );
 }
 
 const styles = StyleSheet.create({

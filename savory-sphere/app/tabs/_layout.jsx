@@ -55,7 +55,7 @@ const TabLayout = () => {
             <Tabs.Screen
                 name='chat'
                 options={{
-                    title: "AI Expert"
+                    title: "Ask Avo"
                 }}
             />
             <Tabs.Screen
