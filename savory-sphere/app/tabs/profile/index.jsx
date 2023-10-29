@@ -18,7 +18,6 @@ const Profile = () => {
     // const profilePic = useSelector((state) => state.user.photoUrl);
     // const userName = useSelector((state) => state.user.displayName);
     // const bio = useSelector((state) => state.user.bio);
-    console.log(foodieCount);
     const handleSignOut = () => {
         signOut(auth).then(() => {
             router.replace('/');

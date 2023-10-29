@@ -77,10 +77,15 @@ const CreatePostPage = () => {
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior={'height'}>
-            <Text style={styles.header}>
+            <View style={styles.header}>
+                <Text style={{ paddingHorizontal: 24, fontSize: 28, color: 'white', fontWeight: 'bold' }}>Post</Text>
+                <View style={{ height: 10}}/>
+                <Text style={{ paddingHorizontal: 24, fontSize: 14, color: 'white', fontWeight: 'bold' }}>Share and motivate your friends to eat healthy.</Text>
+            </View>
+            {/* <Text style={styles.header}>
                 POST
-            </Text>
-            <ScrollView >
+            </Text> */}
+            <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 20 }}>
                 <TouchableOpacity onPress={pickImage}>
                     <View style={{
                         alignItems: "center"
@@ -111,16 +116,15 @@ export default CreatePostPage;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: Constants.statusBarHeight,
-        paddingHorizontal: 20
+        // marginTop: Constants.statusBarHeight,
+        // paddingHorizontal: 20
     },
     header: {
-        textAlign: "center",
-        fontSize: 40,
-        color: COLORS.PRIMARY,
-        fontFamily: "Helvetica",
-        fontWeight: 'bold',
-        marginVertical: 40,
+        paddingTop: Constants.statusBarHeight + 20,
+        backgroundColor: COLORS.PRIMARY,
+        paddingBottom: 20,
+        // borderBottomLeftRadius: 10,
+        // borderBottomRightRadius: 10,
     },
     image: {
         width: `100%`,
