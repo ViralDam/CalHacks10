@@ -6,6 +6,16 @@ import { useDispatch } from 'react-redux';
 import { setFoodie, setUserBio, setUserDob, setUserEmail, setUserName, setUserPhoto, setUserUid } from '../src/redux/actions';
 import { doc, getDoc, Timestamp } from "firebase/firestore";
 
+const compare = (a,b) => {
+    if ( a.name < b.name ){
+        return -1;
+      }
+      if ( a.name > b.name ){
+        return 1;
+      }
+      return 0;
+}
+
 export default function AppLayout() {
     const [initializing, setInitializing] = useState(true);
     const [user, setUser] = useState();
@@ -37,7 +47,8 @@ export default function AppLayout() {
                     dispatch(setUserBio(docData.bio))
                     dispatch(setUserDob(timestamp.toDate().toString()))
                     dispatch(setUserUid(user.uid))
-                    dispatch(setFoodie(docData.foodies))
+                    sortedFoodies = docData.foodies.sort(compare);
+                    dispatch(setFoodie(sortedFoodies))
                     router.replace('tabs');
                 } else {
                     console.log("No such document!");
