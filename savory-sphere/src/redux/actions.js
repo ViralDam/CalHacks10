@@ -5,6 +5,7 @@ export const SET_UID = "SET_UID";
 export const SET_BIO = "SET_BIO";
 export const SET_DOB = "SET_DOB";
 export const SET_FOODIE = "SET_FOODIE";
+export const SET_P_FEED = "SET_P_FEED";
 
 export function setUserName(name) {
     return {
@@ -52,5 +53,12 @@ export function setFoodie(foodie) {
     return {
         type: SET_FOODIE,
         foodie,
+    };
+}
+
+export function addPFeed(feed) {
+    return {
+        type: SET_P_FEED,
+        feed,
     };
 }

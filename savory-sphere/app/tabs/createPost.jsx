@@ -4,11 +4,12 @@ import { COLORS } from "../../src/utils/constants";
 import { useState } from "react";
 import { Image } from "expo-image";
 import * as ImagePicker from 'expo-image-picker';
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
 import { doc, setDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../../src/firebase";
 import { router } from "expo-router";
+import { addPFeed } from "../../src/redux/actions";
 
 const dummyImage = require('../../assets/images/blank-post.png');
 
@@ -22,6 +23,8 @@ const CreatePostPage = () => {
     const userUid = useSelector((state) => state.user.uid);
     const userName = useSelector((state) => state.user.displayName);
     const userImageUrl = useSelector((state) => state.user.photoUrl)
+
+    const dispatch = useDispatch();
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -37,6 +40,9 @@ const CreatePostPage = () => {
     };
 
     const handleShare = async () => {
+        if(isRecipe) {
+            return;
+        }
         setSubmitted(true);
         const postId = `${userUid}${Date.now()}`;
         try {
@@ -55,6 +61,7 @@ const CreatePostPage = () => {
             setDishName('');
             setCaption('');
             setSubmitted(false);
+            dispatch(addPFeed({imageUrl: photoUrl, caption: caption, ratings: 0}))
             router.push('tabs')
         } catch (e) {
             console.log(e);
